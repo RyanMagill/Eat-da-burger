@@ -1,26 +1,26 @@
-// Dependencies
-var express = require("express");
-var mysql = require("mysql");
+const mysql = require("mysql");
+let connection;
 
-const inquirer = require("inquirer");
+if (process.env.JAWSDB_URL) {
+  connection = mysql.createConnection(process.env.JAWSDB_URL);
+} else {
+  connection = mysql.createConnection({
+  host: "localhost",
+  port: 3306,
+  user: "root",
+  password: "dennis97",
+  database: "burgers_db"
+});
+};
 
+// Make connection.
+connection.connect((err) => {
+  if (err) {
+    console.error("error connecting: " + err.stack);
+    return;
+  }
+  console.log("connected as id " + connection.threadId);
+});
 
-// Sets up the Express App
-var connection = mysql.createConnection({
-    host: "localhost",
-  
-    // Your port; if not 3306
-    port: 3306,
-  
-    // Your username
-    user: "root",
-  
-    // Your password
-    password: "dennis97",
-    database: "employees_db"
-  });
-  
-  connection.connect(function(err) {
-    if (err) throw err;
-    console.log("connected as id " + connection.threadId + "\n");
-  });
+// Export connection for our ORM to use.
+module.exports = connection;
